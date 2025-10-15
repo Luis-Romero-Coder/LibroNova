@@ -11,26 +11,33 @@ import com.libronova.service.BookService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 /**
  *
  * @author Coder
  */
 public class BookServiceImp implements BookService {
 
-    private static final Logger LOGGER = Logger.getLogger(BookServiceImp.class.getName());
-    private final BookDAO bookDAO = new BookDAOImp();
+    private BookDAO bookDAO;
+
+    public BookServiceImp() {
+        this.bookDAO = new BookDAOImp();
+    }
 
     @Override
     public boolean create(Book book) throws Exception {
+        // Validar ISBN único
         if (bookDAO.searchByIsbn(book.getIsbn()).isPresent()) {
-            throw new IllegalArgumentException("Ya existe un libro con ese ISBN.");
+            throw new Exception("ISBN already exists.");
         }
         return bookDAO.create(book);
     }
 
     @Override
     public boolean update(Book book) throws Exception {
+        Optional<Book> existing = bookDAO.searchByIsbn(book.getIsbn());
+        if (existing.isPresent() && existing.get().getId() != book.getId()) {
+            throw new Exception("ISBN already exists for another book.");
+        }
         return bookDAO.update(book);
     }
 

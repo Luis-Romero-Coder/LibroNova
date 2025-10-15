@@ -11,26 +11,32 @@ import com.libronova.service.MemberService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 /**
  *
  * @author Coder
  */
 public class MemberServiceImp implements MemberService {
 
-    private static final Logger LOGGER = Logger.getLogger(MemberServiceImp.class.getName());
-    private final MemberDAO memberDAO = new MemberDAOImp();
+    private MemberDAO memberDAO;
+
+    public MemberServiceImp() {
+        this.memberDAO = new MemberDAOImp();
+    }
 
     @Override
     public boolean create(Member member) throws Exception {
         if (memberDAO.searchByDocument(member.getDocument()).isPresent()) {
-            throw new IllegalArgumentException("Ya existe un miembro con ese documento.");
+            throw new Exception("Member document already exists.");
         }
         return memberDAO.create(member);
     }
 
     @Override
     public boolean update(Member member) throws Exception {
+        Optional<Member> existing = memberDAO.searchByDocument(member.getDocument());
+        if (existing.isPresent() && existing.get().getId() != member.getId()) {
+            throw new Exception("Document already exists for another member.");
+        }
         return memberDAO.update(member);
     }
 
