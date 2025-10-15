@@ -1,109 +1,134 @@
 # LibroNova
 
-**LibroNova** is a desktop library management system built in **Java SE 17** with a simple graphical interface using **JOptionPane**. It manages books, members, users, and loans, applying a layered architecture (Controller → Service → DAO → Model) with JDBC for persistence.
+## Overview
+LibroNova is a desktop library management system developed in **Java SE 17** with a simple GUI using **JOptionPane**. It centralizes management of books, members, users, and loans while ensuring data integrity and business rule validations. The system follows a **layered architecture** and uses **JDBC with MySQL** for persistence.
 
 ---
 
-## 🏗 Project Structure
+## Features Implemented
+
+- **Book Management**
+  - Create, update, delete books.
+  - ISBN uniqueness validation.
+  - Filter books by author or category.
+  - Track total and available copies.
+- **Member Management**
+  - Create, update, delete members.
+  - Unique document ID validation.
+  - Track member status (ACTIVE/INACTIVE).
+- **User Management & Authentication**
+  - Login with roles (`ADMIN`, `ASISTENTE`).
+  - CRUD operations on users.
+  - Role and state defaults.
+- **Loan Management**
+  - Create and return loans.
+  - Automatic penalty calculation for late returns.
+  - Stock updates on loan and return with **JDBC transactions**.
+- **Data Persistence**
+  - MySQL database.
+  - JDBC DAO implementations.
+- **Configuration**
+  - `config.properties` for database connection and loan settings.
+- **Logging**
+  - Java `java.util.logging` for activities and errors.
+- **Validation & Exceptions**
+  - ISBN, stock, document, state, and return validations.
+- **Unit Testing**
+  - JUnit 5 for core services (implemented).
+
+---
+
+## Project Structure
 
 com.libronova
-│
-├── controller // Controllers handling user interactions via JOptionPane
-├── dao // DAO interfaces for database operations
-├── dao.imp // DAO implementations using JDBC
-├── model // Data models: Book, Member, User, Role, Lending
-├── service // Service interfaces for business logic
-├── service.imp // Service implementations (in progress)
-└── util // Utilities: DBConnection, ConfigUtil, Logging
-resources
-└── config.properties // Database and system configuration
+
+├── config
+
+│ └── ConfigUtil.java
+
+├── dao
+
+│ ├── BookDAO.java
+
+│ ├── MemberDAO.java
+
+│ ├── UserDAO.java
+
+│ └── LendingDAO.java
+
+├── dao/imp
+
+│ ├── BookDAOImp.java
+
+│ ├── MemberDAOImp.java
+
+│ ├── UserDAOImp.java
+
+│ └── LendingDAOImp.java
+
+├── model
+
+│ ├── Book.java
+
+│ ├── Member.java
+
+│ ├── User.java
+
+│ └── Lending.java
+
+├── service
+
+│ ├── BookService.java
+
+│ ├── MemberService.java
+
+│ ├── UserService.java
+
+│ └── LendingService.java
+
+├── service/imp
+
+│ ├── BookServiceImp.java
+
+│ ├── MemberServiceImp.java
+
+│ ├── UserServiceImp.java
+
+│ └── LendingServiceImp.java
+
+└── LibroNova.java (main application)
 
 
 ---
 
-## ✅ Completed Modules
+## Database Schema
 
-### 1. Models
-- **Book**: Book details, stock management, price, state  
-- **Member**: Library members with document, name, phone, address, state  
-- **User**: Application users with role, state, and authentication  
-- **Role**: User roles (ADMIN, ASSISTANT)  
-- **Lending**: Loans with loan date, return date, expiration, penalties, and state  
+**Tables:**
+- `roles` (ADMIN, ASISTENTE)
+- `usuarios` (users)
+- `socios` (members)
+- `libros` (books)
+- `prestamos` (loans)
 
-### 2. DAO / DAO Implementations
-- `BookDAO` / `BookDAOImp`  
-- `UserDAO` / `UserDAOImp`  
-- `MemberDAO` / `MemberDAOImp`  
-- `LendingDAO` / `LendingDAOImp` ✅ (completed and handling LocalDate → java.sql.Date conversion)  
-
-### 3. Controllers (Partial)
-- `BookController` ✅  
-- `UserController` ✅  
-- `MemberController` ✅ (renamed to match new model)  
-- `LendingController` ✅  
-
-### 4. Utilities
-- `DBConnection` (JDBC) ✅  
-- `ConfigUtil` (`config.properties`) ✅  
-- Logging with `java.util.logging` ✅  
+**Initial Data:**
+- Admin and assistant users.
+- Sample books and members.
 
 ---
+## How to Run
 
-## ⚠️ Pending Modules / Features
-
-- **Services (`ServiceImp`)**:
-  - `BookServiceImp`: validation of ISBN uniqueness, stock management  
-  - `UserServiceImp`: authentication, default roles, uniqueness checks  
-  - `MemberServiceImp`: state validation, unique document  
-  - `LendingServiceImp`: transactional loan and return operations, penalty calculation  
-
-- **Full GUI / Menu**:  
-  - Main menu for Catalog, Members, Users, Loans, Export  
-  - Table-like listings in JOptionPane  
-  - Success / error confirmations  
-
-- **Export / Logging**:  
-  - Export books and overdue loans to CSV  
-  - Use configuration from `config.properties` for loan days and penalties  
-  - Log all CRUD operations  
-
-- **Custom Exceptions & Validations**:  
-  - Business exceptions for duplicate ISBN, inactive members, insufficient stock, etc.  
-
-- **JUnit5 Tests**:  
-  - Validate penalties, stock, and unique ISBN  
-  - Ensure service layer correctness  
-
----
-
-## 💾 Database
-
-- **Database Name**: `libronova`  
-- **Tables**: `roles`, `usuarios`, `socios`, `libros`, `prestamos`  
-- **Initial Data**:  
-  - Roles: ADMIN, ASSISTANT  
-  - Users: admin, asistente1  
-  - Members: Carlos Ruiz, María López  
-  - Books: *El Principito*, *Cien Años de Soledad*  
-
----
-
-## ⚙️ Requirements
-
-- **Java SE 17**  
-- **Maven** for build and dependency management  
-- **MySQL 8+** (or compatible)  
-- Optional: IDE like **NetBeans**  
-
----
-
-## 📌 Notes
-
-This project is a work in progress. Core models, DAOs, and controllers are functional, but **service layer, full GUI, export features, and tests** are still pending.  
-
-The system is designed for modularity, separation of layers, and future extension with full CRUD operations and business logic enforcement.
-
----
+1. Install **Java 17**, **Maven**, and **MySQL**.
+2. Create database using `libronova.sql`.
+3. Update `config.properties` with your MySQL credentials.
+4. Open the project in **NetBeans**.
+5. Build with Maven:  
+```bash
+   mvn clean install
+```
+6. Run the main class:
+```bash
+  com.libronova.LibroNova
+```
 
 ## 📝 Author
 
